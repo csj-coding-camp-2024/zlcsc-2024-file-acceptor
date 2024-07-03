@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"mime/multipart"
 	"net/http"
 
@@ -32,6 +33,16 @@ func main() {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"name": req.File.Filename})
+	})
+
+	r.GET("/:filename", func(c *gin.Context) {
+		// Get id from url
+		filename := c.Param("filename")
+
+		fmt.Println(filename)
+
+		c.Header("Content-Disposition", "attachment; filename="+filename)
+		http.ServeFile(c.Writer, c.Request, "uploaded/"+filename)
 	})
 	r.Run(":80")
 }
